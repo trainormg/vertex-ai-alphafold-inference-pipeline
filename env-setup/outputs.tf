@@ -27,11 +27,11 @@ output "fileshare" {
 }
 
 output "project_id" {
-  value = data.google_project.project.project_id
+  value = local.project.project_id
 }
 
 output "project_number" {
-  value = data.google_project.project.number
+  value = local.project.number
 }
 
 output "bucket_name" {

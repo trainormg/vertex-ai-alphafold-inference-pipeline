@@ -13,17 +13,26 @@
 # limitations under the License.
 
 
+locals {
+  gcs_bucket_name = "${local.project_id}-${var.gcs_bucket_name}"
+}
+
 
 resource "google_storage_bucket" "artifact_repo" {
-  depends_on  = [google_project_service.enable_required_services]
+  depends_on = [google_project_service.enable_required_services]
 
-  name                        = var.gcs_bucket_name
+  name                        = local.gcs_bucket_name
   location                    = var.region
   storage_class               = "REGIONAL"
   force_destroy               = var.force_destroy
   uniform_bucket_level_access = var.uniform_bucket_access
+  project                     = local.project_id
 
   labels = {
     goog-packaged-solution = "target-and-lead-id"
+  }
+
+  soft_delete_policy {
+    retention_duration_seconds = 0
   }
 }

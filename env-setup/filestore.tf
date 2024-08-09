@@ -17,6 +17,7 @@ resource "google_filestore_instance" "filestore_instance" {
   name     = var.filestore_instance_id
   location = var.zone
   tier     = var.filestore_tier
+  project  = local.project_id
 
   file_shares {
     capacity_gb = var.share_capacity

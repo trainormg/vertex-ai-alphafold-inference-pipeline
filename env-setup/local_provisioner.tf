@@ -15,13 +15,13 @@
 
 
 resource "null_resource" "copy_datasets" {
-  depends_on  = [google_project_service.enable_required_services]
+  depends_on = [google_project_service.enable_required_services]
 
   triggers = {
     always_run     = timestamp()
     REGION         = var.region
-    PROJECT_ID     = data.google_project.project.project_id
-    PROJECT_NUMBER = data.google_project.project.number
+    PROJECT_ID     = local.project.project_id
+    PROJECT_NUMBER = local.project.number
     NETWORK_ID     = google_compute_network.network.id
     FILESTORE_IP   = google_filestore_instance.filestore_instance.networks.0.ip_addresses.0
     FILESHARE      = google_filestore_instance.filestore_instance.file_shares.0.name
@@ -42,7 +42,7 @@ resource "null_resource" "copy_datasets" {
                 sed -i s#MOUNT_POINT#$MOUNT_POINT#g vertex-training-template.yaml
                 sed -i s#GCS_PATH#$GCS_PATH#g vertex-training-template.yaml
 
-                gcloud ai custom-jobs create --region ${self.triggers.REGION} --display-name populate_filestore --config vertex-training-template.yaml
+                gcloud ai custom-jobs create --region ${self.triggers.REGION} --display-name populate_filestore --config vertex-training-template.yaml --project ${self.triggers.PROJECT_ID}
                 EOT
   }
 

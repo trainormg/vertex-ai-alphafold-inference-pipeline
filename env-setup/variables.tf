@@ -162,3 +162,4 @@ variable "ar_repo_name" {
   description = "Artifact Registry repository name to hold pipeline images"
   type        = string
 }
+

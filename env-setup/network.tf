@@ -16,7 +16,8 @@ resource "google_compute_network" "network" {
   name                    = var.network_name
   auto_create_subnetworks = "false"
   routing_mode            = "REGIONAL"
-  depends_on  = [google_project_service.enable_required_services]
+  project                 = local.project_id
+  depends_on              = [google_project_service.enable_required_services]
 }
 
 resource "google_compute_subnetwork" "subnetwork" {
@@ -24,6 +25,7 @@ resource "google_compute_subnetwork" "subnetwork" {
   region                   = var.region
   network                  = google_compute_network.network.self_link
   ip_cidr_range            = var.subnet_ip_range
+  project                  = local.project_id
   private_ip_google_access = true
 }
 
@@ -35,6 +37,7 @@ resource "google_compute_global_address" "private_ip_alloc_service_networking" {
   address       = split("/", var.peering_ip_range)[0]
   prefix_length = split("/", var.peering_ip_range)[1]
   network       = google_compute_network.network.id
+  project       = local.project_id
 
   labels = {
     goog-packaged-solution = "target-and-lead-id"
