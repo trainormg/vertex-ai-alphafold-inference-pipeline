@@ -20,3 +20,9 @@ variable "random_id" {
   type        = bool
   default     = true
 }
+
+variable "create_project" {
+  description = "Create a new project or use an existing one."
+  type        = bool
+  default     = true
+}

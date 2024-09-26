@@ -16,37 +16,70 @@ locals {
   image_project = "deeplearning-platform-release"
 }
 
-resource "google_workbench_instance" "notebook_instance" {
-  depends_on = [google_project_service.enable_required_services]
-  name       = var.workbench_instance_name
-  location   = var.zone
-  project    = local.project_id
+# resource "google_workbench_instance" "notebook_instance" {
+#   depends_on = [google_project_service.enable_required_services]
+#   name       = var.workbench_instance_name
+#   location   = var.zone
+#   project    = local.project_id
 
-  gce_setup {
-    machine_type      = var.machine_type
-    disable_public_ip = true
+#   gce_setup {
+#     machine_type = var.machine_type
+#     # disable_public_ip = true
 
-    metadata = {
-      terraform = "true"
-    }
-    vm_image {
-      project = local.image_project
-      family  = var.image_family
-    }
+#     metadata = {
+#       terraform = "true"
+#     }
+#     vm_image {
+#       project = local.image_project
+#       family  = var.image_family
+#     }
 
-    boot_disk {
-      disk_size_gb = var.boot_disk_size
-    }
+#     boot_disk {
+#       disk_size_gb = var.boot_disk_size
+#     }
 
-    network_interfaces {
-      network = google_compute_network.network.id
-      subnet  = google_compute_subnetwork.subnetwork.id
-    }
+#     network_interfaces {
+#       network = google_compute_network.network.id
+#       subnet  = google_compute_subnetwork.subnetwork.id
+#     }
+#   }
+#   # no_remove_data_disk = true
+
+
+#   labels = {
+#     goog-packaged-solution = "target-and-lead-id"
+#   }
+
+#   timeouts {
+#     create = "30m"
+#   }
+# }
+
+resource "google_notebooks_instance" "notebook_instance" {
+  depends_on   = [google_project_service.enable_required_services]
+  name         = var.workbench_instance_name
+  machine_type = var.machine_type
+  location     = var.zone
+
+  network = google_compute_network.network.id
+  subnet  = google_compute_subnetwork.subnetwork.id
+
+  vm_image {
+    project      = local.image_project
+    image_family = var.image_family
   }
-  # no_remove_data_disk = true
 
+  metadata = {
+    terraform = "true"
+  }
+
+  boot_disk_size_gb   = var.boot_disk_size
+  no_remove_data_disk = true
 
   labels = {
     goog-packaged-solution = "target-and-lead-id"
   }
+
+  project      = local.project_id
+  no_public_ip = true
 }

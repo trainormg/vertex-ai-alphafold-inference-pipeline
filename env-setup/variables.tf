@@ -45,7 +45,7 @@ variable "workbench_instance_name" {
 }
 
 variable "filestore_instance_id" {
-  description = "he instance ID of the Filestore instance"
+  description = "The instance ID of the Filestore instance"
   type        = string
 }
 
@@ -162,4 +162,3 @@ variable "ar_repo_name" {
   description = "Artifact Registry repository name to hold pipeline images"
   type        = string
 }
-

@@ -192,3 +192,5 @@ env.sh
 # IntelliJ IDEA files
 *.iml
 .idea
+
+bin/

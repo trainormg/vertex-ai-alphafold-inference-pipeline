@@ -1,6 +1,9 @@
 locals {
-  project_id = var.random_id ? "${var.project_id}-${random_id.default.hex}" : var.project_id
-  project    = google_project.new_project
+  project_id = (var.random_id && var.create_project) ? "${var.project_id}-${random_id.default.hex}" : var.project_id
+  project = [
+    google_project.new_project,
+    data.google_project.existing_project[0]
+  ][var.create_project ? 0 : 1]
 }
 
 
@@ -8,6 +11,11 @@ resource "random_id" "default" {
   byte_length = 4
 }
 
+
+data "google_project" "existing_project" {
+  count      = var.create_project ? 1 : 0
+  project_id = local.project_id
+}
 
 resource "google_project" "new_project" {
   name                = var.project_id

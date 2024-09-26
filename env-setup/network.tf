@@ -50,4 +50,10 @@ resource "google_service_networking_connection" "service_connection" {
   reserved_peering_ranges = [google_compute_global_address.private_ip_alloc_service_networking.name]
 }
 
-
+module "nat" {
+  source         = "github.com/GoogleCloudPlatform/cloud-foundation-fabric//modules/net-cloudnat?ref=v34.1.0&depth=1"
+  project_id     = local.project_id
+  region         = var.region
+  router_network = google_compute_network.network.self_link
+  name           = var.network_name
+}

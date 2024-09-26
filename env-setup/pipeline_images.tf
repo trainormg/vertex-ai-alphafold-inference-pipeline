@@ -15,19 +15,21 @@
 // Provision a artifact registry for alphafold_components images
 resource "google_artifact_registry_repository" "alphafold_components" {
   depends_on    = [google_project_service.enable_required_services]
-  project       = var.project_id    
+  project       = local.project_id
   location      = var.region
   repository_id = var.ar_repo_name
   format        = "DOCKER"
   description   = "Alphafold Components kfp image"
 }
+
+
 resource "null_resource" "pipeline_images1" {
   depends_on = [
     google_artifact_registry_repository.alphafold_components
   ]
 
   triggers = {
-    full_image_path = "${var.region}-docker.pkg.dev/${var.project_id}/${var.ar_repo_name}/alphafold-components"
+    full_image_path = "${var.region}-docker.pkg.dev/${local.project_id}/${var.ar_repo_name}/alphafold-components"
   }
 
   provisioner "local-exec" {
@@ -36,20 +38,22 @@ resource "null_resource" "pipeline_images1" {
       cd ..
       gcloud builds submit . --timeout "2h" \
       --region=${var.region} \
-      --project=${var.project_id} \
+      --project=${local.project_id} \
       --config=alphafold.yml \
       --substitutions=_CONTAINER_IMAGE_TAG=${self.triggers.full_image_path} \
       --machine-type=e2-highcpu-8 --async
       EOT
   }
 }
+
+
 resource "null_resource" "pipeline_images2" {
   depends_on = [
     google_artifact_registry_repository.alphafold_components
   ]
 
   triggers = {
-    full_image_path = "${var.region}-docker.pkg.dev/${var.project_id}/${var.ar_repo_name}/alphafold-components"
+    full_image_path = "${var.region}-docker.pkg.dev/${local.project_id}/${var.ar_repo_name}/alphafold-components"
   }
 
   provisioner "local-exec" {
@@ -58,7 +62,7 @@ resource "null_resource" "pipeline_images2" {
       cd ..
       gcloud builds submit . --timeout "2h" \
       --region=${var.region} \
-      --project=${var.project_id} \
+      --project=${local.project_id} \
       --config=alphafold-cuda1111.yml \
       --substitutions=_CONTAINER_IMAGE_TAG=${self.triggers.full_image_path} \
       --machine-type=e2-highcpu-8  --async

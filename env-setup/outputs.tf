@@ -19,7 +19,7 @@ output "filestore_ip" {
 }
 
 output "network_id" {
-  value = google_compute_network.network.id
+  value = google_compute_network.network.name
 }
 
 output "fileshare" {
@@ -38,3 +38,14 @@ output "bucket_name" {
   value = google_storage_bucket.artifact_repo.name
 }
 
+output "zone" {
+  value = var.zone
+}
+
+output "filestore_id" {
+  value = google_filestore_instance.filestore_instance.id
+}
+
+output "image_uri" {
+  value = null_resource.pipeline_images1.triggers.full_image_path
+}
