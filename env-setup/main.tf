@@ -41,7 +41,7 @@ data "google_project" "project" {
 resource "google_project_service" "enable_required_services" {
   project            = var.project_id
   disable_on_destroy = false
-  for_each           = toset([
+  for_each = toset([
     "artifactregistry.googleapis.com",
     "cloudbuild.googleapis.com",
     "compute.googleapis.com",

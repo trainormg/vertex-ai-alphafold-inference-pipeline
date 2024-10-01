@@ -17,13 +17,13 @@ locals {
 }
 
 resource "google_notebooks_instance" "notebook_instance" {
-  depends_on = [ google_project_service.enable_required_services ]
+  depends_on   = [google_project_service.enable_required_services]
   name         = var.workbench_instance_name
   machine_type = var.machine_type
   location     = var.zone
 
-  network = google_compute_network.network.id
-  subnet  = google_compute_subnetwork.subnetwork.id
+  network = google_compute_network.network.self_link
+  subnet  = google_compute_subnetwork.subnetwork.self_link
 
   vm_image {
     project      = local.image_project
@@ -35,9 +35,19 @@ resource "google_notebooks_instance" "notebook_instance" {
   }
 
   boot_disk_size_gb   = var.boot_disk_size
-  no_remove_data_disk = true
+  no_remove_data_disk = false
 
   labels = {
     goog-packaged-solution = "target-and-lead-id"
+  }
+
+  project      = var.project_id
+  no_public_ip = true
+  lifecycle {
+    ignore_changes = [
+      tags,
+      disk_encryption,
+      service_account_scopes
+    ]
   }
 }

@@ -38,3 +38,14 @@ output "bucket_name" {
   value = google_storage_bucket.artifact_repo.name
 }
 
+output "zone" {
+  value = var.zone
+}
+
+output "filestore_id" {
+  value = var.filestore_instance_id
+}
+
+output "image_uri" {
+  value = null_resource.pipeline_images1.triggers.full_image_path
+}

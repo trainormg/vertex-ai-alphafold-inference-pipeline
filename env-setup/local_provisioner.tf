@@ -15,7 +15,7 @@
 
 
 resource "null_resource" "copy_datasets" {
-  depends_on  = [google_project_service.enable_required_services]
+  depends_on = [google_project_service.enable_required_services]
 
   triggers = {
     always_run     = timestamp()
@@ -42,14 +42,14 @@ resource "null_resource" "copy_datasets" {
                 sed -i s#MOUNT_POINT#$MOUNT_POINT#g vertex-training-template.yaml
                 sed -i s#GCS_PATH#$GCS_PATH#g vertex-training-template.yaml
 
-                gcloud ai custom-jobs create --region ${self.triggers.REGION} --display-name populate_filestore --config vertex-training-template.yaml
+                gcloud ai custom-jobs create --region ${self.triggers.REGION} --display-name populate_filestore --config vertex-training-template.yaml --project=${self.triggers.PROJECT_ID}
                 EOT
   }
 
   provisioner "local-exec" {
     when       = destroy
     command    = <<EOT
-                gcloud ai custom-jobs cancel $(gcloud ai custom-jobs list --project=${self.triggers.PROJECT_ID} --region=${self.triggers.REGION} --filter="displayName: populate_filestore AND (state: JOB_STATE_PENDING OR state: JOB_STATE_RUNNING)" --limit=1 | grep -e "name" | awk '{ print $2}') --region=${self.triggers.REGION}
+                gcloud ai custom-jobs cancel $(gcloud ai custom-jobs list --project=${self.triggers.PROJECT_ID} --region=${self.triggers.REGION} --filter="displayName: populate_filestore AND (state: JOB_STATE_PENDING OR state: JOB_STATE_RUNNING)" --limit=1 | grep -e "name" | awk '{ print $2}') --region=${self.triggers.REGION} --project=self.triggers.PROJECT_ID
                 EOT
     on_failure = continue
   }
