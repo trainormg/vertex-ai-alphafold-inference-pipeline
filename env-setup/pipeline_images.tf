@@ -15,7 +15,7 @@
 // Provision a artifact registry for alphafold_components images
 resource "google_artifact_registry_repository" "alphafold_components" {
   depends_on    = [google_project_service.enable_required_services]
-  project       = var.project_id    
+  project       = var.project_id
   location      = var.region
   repository_id = var.ar_repo_name
   format        = "DOCKER"
@@ -27,7 +27,9 @@ resource "null_resource" "pipeline_images1" {
   ]
 
   triggers = {
-    full_image_path = "${var.region}-docker.pkg.dev/${var.project_id}/${var.ar_repo_name}/alphafold-components"
+    full_image_path    = "${var.region}-docker.pkg.dev/${var.project_id}/${var.ar_repo_name}/alphafold-components"
+    configfile_changed = filesha256("../alphafold.yml")
+    dockerfile_changed = filesha256("../Alphafold.dockerfile")
   }
 
   provisioner "local-exec" {
@@ -49,7 +51,9 @@ resource "null_resource" "pipeline_images2" {
   ]
 
   triggers = {
-    full_image_path = "${var.region}-docker.pkg.dev/${var.project_id}/${var.ar_repo_name}/alphafold-components"
+    full_image_path    = "${var.region}-docker.pkg.dev/${var.project_id}/${var.ar_repo_name}/alphafold-components"
+    configfile_changed = filesha256("../alphafold-cuda1111.yml")
+    dockerfile_changed = filesha256("../Alphafold1_cuda1111.dockerfile")
   }
 
   provisioner "local-exec" {

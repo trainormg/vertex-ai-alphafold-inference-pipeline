@@ -18,7 +18,7 @@ resource "null_resource" "copy_datasets" {
   depends_on = [google_project_service.enable_required_services]
 
   triggers = {
-    always_run     = timestamp()
+    # always_run     = timestamp()
     REGION         = var.region
     PROJECT_ID     = data.google_project.project.project_id
     PROJECT_NUMBER = data.google_project.project.number
