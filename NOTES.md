@@ -11,6 +11,9 @@ ipython kernel install --name my-env-1 --user
 ```
 
 
+https://cloud.google.com/vertex-ai/docs/workbench/instances/add-environment
+
+
 ```python
 !pip uninstall -y shapely pygeos geopandas
 # Install specific versions of shapely, pygeos, and geopandas known to be compatible
